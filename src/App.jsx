@@ -3,12 +3,30 @@ import Search from './Search.jsx'
 import { useState } from 'react'
 
 function App() {
+  const [city, setCity] = useState('');
+  const [icon, setIcon] = useState('');
+  const [description, setDescription] = useState('');
+  const [tempMax, setTempMax] = useState('');
+  const [tempMin, setTempMin] = useState('');
+
+  let image = `http://openweathermap.org/img/wn/${icon}.png`
+
   return (
     <>
-      <h1>Hello D-Bag</h1>
-      <p>Look up your City:</p>
-      <Search />
-
+      <h2>Curious about the Outside?</h2>
+      <h5>Look up your city</h5>
+      <Search 
+        city={city}
+        setCity={setCity}
+        setIcon={setIcon}
+        setDescription={setDescription}
+        setTempMax={setTempMax}
+        setTempMin={setTempMin}
+      />
+      {icon === '' ? <></> : <img src={image}></img>}
+      <p>Currently looks like: <strong>{description}</strong></p>
+      <p>H: <strong>{tempMax ? tempMax : '-'}°</strong></p>
+      <p>L: <strong>{tempMin ? tempMin : '-'}°</strong></p>
     </>
   )
 }
