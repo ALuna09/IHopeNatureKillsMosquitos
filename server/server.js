@@ -7,13 +7,13 @@ const PORT = 8080;
 
 app.use(cors());
 
-app.get('/weather/:city', (req, res) => {
-    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${req.params.city}&appid=${process.env.API_KEY}`)
-    .then( res => res.json() )
-    .then( data => {
+app.get('/weather/:city/:units', (req, res) => {
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${req.params.city}&units=${req.params.units}&appid=${process.env.API_KEY}`)
+    .then(res => res.json() )
+    .then(data => {
         res.send(data);
     })
-    .catch( err => console.error(err))
+    .catch(err => console.error(err))
 });
 
 app.get('/', (req, res) => {

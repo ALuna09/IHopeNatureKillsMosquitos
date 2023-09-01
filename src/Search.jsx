@@ -5,20 +5,24 @@ const Search = (props) => {
         setCity,
         setIcon,
         setDescription,
+        setTemperature,
         setTempMin,
-        setTempMax
+        setTempMax,
+        units,
+        unitToggle
     } = props;
 
     const getCityWeather = (e) => {
         e.preventDefault();
-        fetch(`http://localhost:8080/weather/${city}`)
+        fetch(`http://localhost:8080/weather/${city}/${units}`)
             .then(res => res.json())
             .then(data => {
                 console.log(data);
                 setIcon(data.weather[0].icon);
                 setDescription(data.weather[0].description);
-                setTempMax(Math.round((data.main.temp_max - 273.15) * 9 / 5 + 32));
-                setTempMin(Math.round((data.main.temp_min - 273.15) * 9 / 5 + 32));
+                setTemperature(data.main.temp);
+                setTempMax(data.main.temp_max);
+                setTempMin(data.main.temp_min);
             })
             .catch(err => console.error(err))
     }
@@ -40,6 +44,9 @@ const Search = (props) => {
                 <button
                     type="submit"
                 >Search</button>
+                <button
+                    onClick={() => unitToggle()}
+                >{units === 'imperial' ? 'Imperial' : 'Metric'}</button>
             </form>
         </>
     )
