@@ -18,16 +18,16 @@ const Search = (props) => {
             .then(res => res.json())
             .then(data => {
                 console.log(data);
-                setIcon(data.weather[0].icon);
-                setDescription(data.weather[0].description);
-                setTemperature(data.main.temp);
-                setTempMax(data.main.temp_max);
-                setTempMin(data.main.temp_min);
+                setIcon(data.icon);
+                setDescription(data.setDescription);
+                setTemperature(Math.round(data.temp));
+                setTempMax(Math.round(data.high));
+                setTempMin(Math.round(data.low));
             })
             .catch(err => console.error(err))
     }
 
-    const handleChange = (e) => {
+    const citySetter = (e) => {
         setCity(e.target.value)
     }
 
@@ -39,8 +39,8 @@ const Search = (props) => {
                 <input
                     type="text"
                     placeholder="Search City"
-                    onChange={(e) => handleChange(e)}
-                    ></input>
+                    onChange={(e) => citySetter(e)}
+                ></input>
                 <button
                     type="submit"
                 >Search</button>

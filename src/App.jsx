@@ -11,7 +11,7 @@ function App() {
   const [tempMin, setTempMin] = useState('');
   const [units, setUnits] = useState('imperial');
 
-  let image = `http://openweathermap.org/img/wn/${icon}.png`
+  let image = `http://openweathermap.org/img/wn/${icon}@2x.png`
 
   const unitToggle = () => {
     if (units === 'imperial') {
@@ -30,27 +30,24 @@ function App() {
       <div
         className='heading'
       >
-        <Search 
-          city={city}
-          setCity={setCity}
-          setIcon={setIcon}
-          setDescription={setDescription}
-          setTemperature={setTemperature}
-          setTempMax={setTempMax}
-          setTempMin={setTempMin}
-          units={units}
-          unitToggle={unitToggle}
-        />
+      <Search 
+        city={city}
+        setCity={setCity}
+        setIcon={setIcon}
+        setDescription={setDescription}
+        setTemperature={setTemperature}
+        setTempMax={setTempMax}
+        setTempMin={setTempMin}
+        units={units}
+        unitToggle={unitToggle}
+      />
         
       </div>
-      {icon ? <img src={image} alt={description}></img> : <></>}
-      <hr></hr>
-      <p>Currently looks like: <strong>{description}</strong></p>
-      <p>Temp:</p>
       <h2>{temperature? temperature : '-'}°</h2>
-      <p>H: <strong>{tempMax ? tempMax : '-'}°</strong></p>
-      <p>L: <strong>{tempMin ? tempMin : '-'}°</strong></p>
-      
+      {icon ? <img src={image} alt={description}></img> : <></>}
+      <p><strong>{description}</strong></p>
+      <p>H: <strong>{tempMax ? tempMax : '-'}°</strong> L: <strong>{tempMin ? tempMin : '-'}°</strong></p>
+      <hr></hr>
     </>
   )
 }
