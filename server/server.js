@@ -2,6 +2,7 @@ const express = require("express");
 const dotenv = require("dotenv").config();
 const cors = require("cors");
 require('../database-mongo/index.js');
+const path = require('path');
 
 const WeatherModel = require('../database-mongo/WeatherSchema.js');
 
