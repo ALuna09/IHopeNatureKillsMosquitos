@@ -9,6 +9,7 @@ const app = express();
 const PORT = 8080;
 
 app.use(cors());
+app.use(express.static(path.join(__dirname, 'dist')));
 
 app.get('/weather/:city/:units', async (req, res) => {
 
@@ -52,6 +53,7 @@ app.get('/weather/:city/:units', async (req, res) => {
 });
 
 app.get('/', (req, res) => {
+    res.sendFile(`${__dirname}/dist/index.html`)
 });
 
 app.listen(PORT, () => {
