@@ -8,7 +8,7 @@ weatherDB.on('error', function() {
 });
 
 weatherDB.once('open', function() {
-  console.log('mongoose connected successfully');
+  console.log('Mongoose connected successfully!');
 });
 
 module.exports = weatherDB;

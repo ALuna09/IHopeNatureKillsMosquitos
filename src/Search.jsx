@@ -9,7 +9,8 @@ const Search = (props) => {
         setTempMin,
         setTempMax,
         units,
-        unitToggle
+        unitToggle,
+        setSearchedCity
     } = props;
 
     const getCityWeather = (e) => {
@@ -17,18 +18,20 @@ const Search = (props) => {
         fetch(`http://localhost:8080/weather/${city}/${units}`)
             .then(res => res.json())
             .then(data => {
-                console.log(data);
+                console.log(`Data from Search.jsx Component:`, data);
                 setIcon(data.icon);
                 setDescription(data.setDescription);
                 setTemperature(Math.round(data.temp));
                 setTempMax(Math.round(data.high));
                 setTempMin(Math.round(data.low));
+                setSearchedCity(data.city);
             })
             .catch(err => console.error(err))
     }
 
     const citySetter = (e) => {
-        setCity(e.target.value)
+        e.preventDefault();
+        setCity(e.target.value);
     }
 
     return (
