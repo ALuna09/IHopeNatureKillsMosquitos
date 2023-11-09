@@ -10,7 +10,10 @@ const Search = (props) => {
         setTempMax,
         units,
         unitToggle,
-        setSearchedCity
+        setSearchedCity,
+        setWindSpeed,
+        setWindDegree,
+        setGust
     } = props;
 
     const getCityWeather = (e) => {
@@ -25,6 +28,10 @@ const Search = (props) => {
                 setTempMax(Math.round(data.high));
                 setTempMin(Math.round(data.low));
                 setSearchedCity(data.city);
+                setWindSpeed(data.wind.speed);
+                setWindDegree(data.wind.deg);
+
+                data.wind.gust ? setGust(data.wind.gust) : setGust(0);
             })
             .catch(err => console.error(err))
     }
@@ -41,13 +48,16 @@ const Search = (props) => {
             >
                 <input
                     type="text"
+                    className="search-box"
                     placeholder="Search City"
                     onChange={(e) => citySetter(e)}
                 ></input>
                 <button
                     type="submit"
+                    className="search-btn"
                 >Search</button>
                 <button
+                    className="units-btn"
                     onClick={() => unitToggle()}
                 >{units === 'imperial' ? 'Imperial' : 'Metric'}</button>
             </form>

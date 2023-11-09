@@ -13,6 +13,8 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'dist')));
 
 app.get('/weather/:city/:units', async (req, res) => {
+    let queriedCity = req.params.city;
+    let units = req.params.units;
 
     let date = new Date();
     const day = date.getDate();
@@ -20,30 +22,29 @@ app.get('/weather/:city/:units', async (req, res) => {
     const year = date.getFullYear();
     const fullDate = `${month}/${day}/${year}`;
     
-    // // TODO: Include units to differentiate between the same city and prefered measurements
     const condition = await WeatherModel.exists({
-        city: req.params.city, 
+        city: queriedCity, 
         lastSearched: fullDate, 
-        unitsOfMeasurement: req.params.units
+        unitsOfMeasurement: units
     });
     
-    //If city exists in our db but lastSearched doesn't match todays date then we move into else statement and fetch data
     if(condition) {
-        const desiredWeatherObj = await WeatherModel.find({city: req.params.city});
+        const desiredWeatherObj = await WeatherModel.find({city: queriedCity, unitsOfMeasurement: units});
         res.send(desiredWeatherObj[0]);
 
     } else {
-        await WeatherModel.findOneAndDelete({city: req.params.city});
+        await WeatherModel.findOneAndDelete({city: queriedCity, unitsOfMeasurement: units});
 
-        fetch(`https://api.openweathermap.org/data/2.5/weather?q=${req.params.city}&units=${req.params.units}&appid=${process.env.API_KEY}`)
+        fetch(`https://api.openweathermap.org/data/2.5/weather?q=${queriedCity}&units=${units}&appid=${process.env.API_KEY}`)
         .then(res => res.json())
         .then(data => {
 
             console.log('Data:', data);
 
+            // organize data in accordance with our schema
             const cityWeatherData = new WeatherModel({
                 city: data.name,
-                unitsOfMeasurement: req.params.units,
+                unitsOfMeasurement: units,
                 lastSearched: fullDate,
                 temp: Math.round(data.main.temp),
                 high: Math.round(data.main.temp_max),
@@ -60,17 +61,8 @@ app.get('/weather/:city/:units', async (req, res) => {
             cityWeatherData.save();
     
             res.send(cityWeatherData);
-            // res.send(data);
         })
         .catch(err => console.error(err))
-
-        // fetch(`https://api.openweathermap.org/data/2.5/forecast/daily?q=${req.params.city}&units=${req.params.units}&appid=${process.env.API_KEY}`)
-        // .then(res => res.json())
-        // .then(data => {
-        //     console.log(`Hi I'm the "daily" weather data`, data);
-
-            //! Doesn't work. API Key is invalid because paid subscription is needed
-        // })
     }
 });
 
