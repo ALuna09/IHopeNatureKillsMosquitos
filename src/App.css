@@ -18,20 +18,20 @@
   filter: drop-shadow(0 0 2em #61dafbaa);
 } */
 
-@keyframes logo-spin {
+/* @keyframes logo-spin {
   from {
     transform: rotate(0deg);
   }
   to {
     transform: rotate(360deg);
   }
-}
+} */
 
-@media (prefers-reduced-motion: no-preference) {
+/* @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
     animation: logo-spin infinite 20s linear;
   }
-}
+} */
 
 .card {
   padding: 2em;
@@ -76,4 +76,21 @@
 .search-box {
   height: 1.6rem;
   text-align: center;
+}
+
+.forecasts {
+  border: solid;
+  border-radius: 3%;
+  margin-top: 3rem;
+  background-image: linear-gradient(rgb(23, 23, 152), rgb(96, 184, 219));
+}
+
+ol {
+  list-style: auto;
+}
+
+li {
+  display: inline-block;
+  margin-right: 2rem;
+  margin-top: 1.5rem;
 }

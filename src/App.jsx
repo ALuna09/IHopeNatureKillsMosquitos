@@ -14,8 +14,19 @@ function App() {
   const [windSpeed, setWindSpeed] = useState(0); //TODO: Organize wind details
   const [windDegree, setWindDegree] = useState(0);
   const [gust, setGust] = useState(0);
+  const [fiveDayForecast, setFiveDayForecast] = useState([]);
 
   let image = `http://openweathermap.org/img/wn/${icon}@2x.png`
+
+  const textDays =[
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday"
+  ]
 
   const unitToggle = () => {
     if (units === 'imperial') {
@@ -27,6 +38,40 @@ function App() {
       setUnits('imperial');
       return;
     }
+  }
+
+  const forecastsIntoElements = (forecasts) => {
+    let collectionOfElements = [];
+
+    //! Important properties of "day":
+    // day.main.temp_max
+    // day.main.temp_min
+    // day.weather[0].icon
+    // day.weather[0].main
+    let id = 0;
+
+    for(let day of forecasts) {
+      let forecastedIcon = day.weather[0].icon;
+      let description = day.weather[0].main;
+      let max = Math.round(day.main.temp_max);
+      let min = Math.round(day.main.temp_min);
+      let date = new Date(day.dt_txt);
+
+      let element = (
+        <li key={id}>
+          <strong>{textDays[date.getDay()]}</strong>
+          <p>{description}</p>
+          <img src={`http://openweathermap.org/img/wn/${forecastedIcon}.png`} alt={description}></img>
+          <p>H: {max} L: {min}</p>
+        </li>
+      );
+
+      collectionOfElements.push(element);
+
+      id++;
+    }
+
+    return collectionOfElements;
   }
 
   return (
@@ -48,6 +93,7 @@ function App() {
           setWindSpeed={setWindSpeed}
           setWindDegree={setWindDegree}
           setGust={setGust}
+          setFiveDayForecast={setFiveDayForecast}
         />
       </div>
 
@@ -72,6 +118,13 @@ function App() {
           <p>Degrees: {windDegree}</p>
           {gust === 0 ? <></> : <p>Gust: {gust}</p>}
         </div>
+        : <></>
+      }
+
+      {fiveDayForecast ? 
+        <ol className='forecasts'>
+          {forecastsIntoElements(fiveDayForecast)}
+        </ol>
         : <></>
       }
     </>

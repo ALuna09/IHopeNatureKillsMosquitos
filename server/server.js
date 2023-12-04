@@ -5,6 +5,7 @@ require('../database-mongo/index.js');
 const path = require('path');
 
 const WeatherModel = require('../database-mongo/WeatherSchema.js');
+const ForecastModel = require('../database-mongo/fiveDayForecast.js');
 
 const app = express();
 const PORT = 8080;
@@ -16,11 +17,39 @@ app.get('/weather/:city/:units', async (req, res) => {
     let queriedCity = req.params.city;
     let units = req.params.units;
 
+    let textDay;
     let date = new Date();
     const day = date.getDate();
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
-    const fullDate = `${month}/${day}/${year}`;
+    const dayOfTheWeek = date.getDay();
+    switch (dayOfTheWeek) {
+        case 0:
+            textDay = `Sunday`;
+            break;
+        case 1:
+            textDay = `Monday`;
+            break;
+        case 2:
+            textDay = `Tuesday`;
+            break;
+        case 3:
+            textDay = `Wednesday`;
+            break;
+        case 4:
+            textDay = `Thursday`;
+            break;
+        case 5:
+            textDay = `Friday`;
+            break;
+        case 6:
+            textDay = `Saturday`;
+            break;
+        default:
+            console.log(`Invalid Date`);
+            break;
+    }
+    const fullDate = `${textDay}, ${month}/${day}/${year}`;
     
     const condition = await WeatherModel.exists({
         city: queriedCity, 
@@ -29,38 +58,55 @@ app.get('/weather/:city/:units', async (req, res) => {
     });
     
     if(condition) {
+        // Look for and present data if match is found in our db
         const desiredWeatherObj = await WeatherModel.find({city: queriedCity, unitsOfMeasurement: units});
         res.send(desiredWeatherObj[0]);
 
     } else {
+        // Deletion of data in our db to avoid duplicates/ conflicting forecasts
         await WeatherModel.findOneAndDelete({city: queriedCity, unitsOfMeasurement: units});
 
-        fetch(`https://api.openweathermap.org/data/2.5/weather?q=${queriedCity}&units=${units}&appid=${process.env.API_KEY}`)
+        // First fetch for current day forcast
+        fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${queriedCity}&units=${units}&appid=${process.env.API_KEY}`)
         .then(res => res.json())
         .then(data => {
+            const {list} = data;
+            // console.log('Data:', data);
 
-            console.log('Data:', data);
+            const initialSearchedDate = list[0]; 
 
             // organize data in accordance with our schema
             const cityWeatherData = new WeatherModel({
-                city: data.name,
+                city: data.city.name,
                 unitsOfMeasurement: units,
                 lastSearched: fullDate,
-                temp: Math.round(data.main.temp),
-                high: Math.round(data.main.temp_max),
-                low: Math.round(data.main.temp_min),
-                description: data.weather[0].main,
-                icon: data.weather[0].icon,
+                temp: Math.round(initialSearchedDate.main.temp),
+                high: Math.round(initialSearchedDate.main.temp_max),
+                low: Math.round(initialSearchedDate.main.temp_min),
+                description: initialSearchedDate.weather[0].main,
+                icon: initialSearchedDate.weather[0].icon,
                 wind: {
-                    speed: data.wind.speed,
-                    deg: data.wind.deg,
-                    gust: data.wind.gust
+                    speed: initialSearchedDate.wind.speed,
+                    deg: initialSearchedDate.wind.deg,
+                    gust: initialSearchedDate.wind.gust
                 }
             });
+            
+            const futureForecasts = new ForecastModel({
+                nextFiveDays: [list[0], list[8], list[16], list[24], list[32]]
+            })
+            //TODO: From list we want stuff from list.main, and list.weather
+            //TODO: list.main -- max, min
+            //TODO: list.weather -- icon, main
 
+            // save our schemas with the data
+            futureForecasts.save();
             cityWeatherData.save();
+            let myData = {futureForecasts, cityWeatherData}
+
+            // console.log(`My Data >>>>>>>>`, myData)
     
-            res.send(cityWeatherData);
+            res.send(myData);
         })
         .catch(err => console.error(err))
     }
@@ -74,3 +120,6 @@ app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);
     console.log(`Remember to start MongoDB through services.msc (win + R)`);
 })
+
+
+// https://api.openweathermap.org/data/2.5/weather?q=${queriedCity}&units=${units}&appid=${process.env.API_KEY}
