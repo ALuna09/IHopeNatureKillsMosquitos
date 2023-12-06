@@ -14,7 +14,8 @@ const weatherSchema = mongoose.Schema({
         speed: Number,
         deg: Number,
         gust: Number
-    }
+    },
+    nextFiveDays: Array
 });
 
 const WeatherModel = mongoose.model('Weather', weatherSchema);

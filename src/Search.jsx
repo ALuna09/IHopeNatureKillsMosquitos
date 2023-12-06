@@ -23,21 +23,23 @@ const Search = (props) => {
             .then(res => res.json())
             .then(data => {
                 console.log(`Data from Search.jsx Component:`, data);
-                const {cityWeatherData, futureForecasts} = data;
+                // const {cityWeatherData} = data;
+                //! Review and rework how data is being handled and passed over
 
                 //set all desired states with weather data
-                setIcon(cityWeatherData.icon);
-                setDescription(cityWeatherData.description);
-                setTemperature(Math.round(cityWeatherData.temp));
-                setTempMax(Math.round(cityWeatherData.high));
-                setTempMin(Math.round(cityWeatherData.low));
-                setSearchedCity(cityWeatherData.city);
-                setWindSpeed(cityWeatherData.wind.speed);
-                setWindDegree(cityWeatherData.wind.deg);
-                setFiveDayForecast(futureForecasts.nextFiveDays);
+                console.log('>>>>>>>>>>>>>:', data.wind);
+                setIcon(data.icon);
+                setDescription(data.description);
+                setTemperature(Math.round(data.temp));
+                setTempMax(Math.round(data.high));
+                setTempMin(Math.round(data.low));
+                setSearchedCity(data.city);
+                setWindSpeed(data.wind.speed);
+                setWindDegree(data.wind.deg);
+                setFiveDayForecast(data.nextFiveDays);
 
                 // if cityWeatherData.wind.gust is not present we will just set gust to 0
-                cityWeatherData.wind.gust ? setGust(cityWeatherData.wind.gust) : setGust(0);
+                data.wind.gust ? setGust(data.wind.gust) : setGust(0);
             })
             .catch(err => console.error(err))
     }

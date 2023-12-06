@@ -5,13 +5,21 @@ require('../database-mongo/index.js');
 const path = require('path');
 
 const WeatherModel = require('../database-mongo/WeatherSchema.js');
-const ForecastModel = require('../database-mongo/fiveDayForecast.js');
+// const ForecastModel = require('../database-mongo/fiveDayForecast.js');
 
 const app = express();
 const PORT = 8080;
 
 app.use(cors());
-app.use(express.static(path.join(__dirname, 'dist')));
+app.use(express.static(`${__dirname}/../dist`));
+
+// var bodyParser = require('body-parser');
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: false }));
+
+app.get('/', (req, res) => {
+    res.sendFile(`${__dirname}/../dist/index.html`)
+});
 
 app.get('/weather/:city/:units', async (req, res) => {
     let queriedCity = req.params.city;
@@ -89,31 +97,26 @@ app.get('/weather/:city/:units', async (req, res) => {
                     speed: initialSearchedDate.wind.speed,
                     deg: initialSearchedDate.wind.deg,
                     gust: initialSearchedDate.wind.gust
-                }
+                },
+                nextFiveDays: [
+                    list[0], 
+                    list[8], 
+                    list[16], 
+                    list[24], 
+                    list[32]
+                ]
             });
-            
-            const futureForecasts = new ForecastModel({
-                nextFiveDays: [list[0], list[8], list[16], list[24], list[32]]
-            })
             //TODO: From list we want stuff from list.main, and list.weather
             //TODO: list.main -- max, min
             //TODO: list.weather -- icon, main
 
             // save our schemas with the data
-            futureForecasts.save();
             cityWeatherData.save();
-            let myData = {futureForecasts, cityWeatherData}
-
-            // console.log(`My Data >>>>>>>>`, myData)
     
-            res.send(myData);
+            res.send(cityWeatherData);
         })
         .catch(err => console.error(err))
     }
-});
-
-app.get('/', (req, res) => {
-    res.sendFile(`${__dirname}/dist/index.html`)
 });
 
 app.listen(PORT, () => {
