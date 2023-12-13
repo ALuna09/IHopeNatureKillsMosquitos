@@ -5,7 +5,6 @@ require('../database-mongo/index.js');
 const path = require('path');
 
 const WeatherModel = require('../database-mongo/WeatherSchema.js');
-// const ForecastModel = require('../database-mongo/fiveDayForecast.js');
 
 const app = express();
 const PORT = 8080;
@@ -17,9 +16,9 @@ app.use(express.static(`${__dirname}/../dist`));
 // app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({ extended: false }));
 
-app.get('/', (req, res) => {
-    res.sendFile(`${__dirname}/../dist/index.html`)
-});
+// app.get('/', (req, res) => {
+//     res.sendFile(`${__dirname}/../dist/index.html`)
+// });
 
 app.get('/weather/:city/:units', async (req, res) => {
     let queriedCity = req.params.city;
@@ -106,9 +105,6 @@ app.get('/weather/:city/:units', async (req, res) => {
                     list[32]
                 ]
             });
-            //TODO: From list we want stuff from list.main, and list.weather
-            //TODO: list.main -- max, min
-            //TODO: list.weather -- icon, main
 
             // save our schemas with the data
             cityWeatherData.save();
