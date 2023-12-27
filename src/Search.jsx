@@ -22,12 +22,12 @@ const Search = (props) => {
         fetch(`http://localhost:8080/weather/${city}/${units}`)
             .then(res => res.json())
             .then(data => {
-                console.log(`Data from Search.jsx Component:`, data);
+                // console.log(`Data from Search.jsx Component:`, data);
                 // const {cityWeatherData} = data;
                 //! Review and rework how data is being handled and passed over
 
                 //set all desired states with weather data
-                console.log('>>>>>>>>>>>>>:', data.wind);
+                // console.log('>>>>>>>>>>>>>:', data.wind);
                 setIcon(data.icon);
                 setDescription(data.description);
                 setTemperature(Math.round(data.temp));
