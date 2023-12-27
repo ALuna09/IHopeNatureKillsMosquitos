@@ -16,9 +16,13 @@ app.use(express.static(`${__dirname}/../dist`));
 // app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({ extended: false }));
 
-// app.get('/', (req, res) => {
-//     res.sendFile(`${__dirname}/../dist/index.html`)
-// });
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + `../dist/index.html`)
+});
+
+app.get('/test', (req, res) => {
+    res.send(`Hello World!`)
+})
 
 app.get('/weather/:city/:units', async (req, res) => {
     let queriedCity = req.params.city;
