@@ -19,7 +19,7 @@ const Search = (props) => {
 
     const getCityWeather = (e) => {
         e.preventDefault();
-        fetch(`http://localhost:8080/weather/${city}/${units}`)
+        fetch(`http://localhost:8080/weather/${city}/${units}`) //! This must be changed to match the aws ip address when running through aws ec2
             .then(res => res.json())
             .then(data => {
                 // console.log(`Data from Search.jsx Component:`, data);

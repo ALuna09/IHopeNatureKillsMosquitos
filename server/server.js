@@ -74,13 +74,15 @@ app.get('/weather/:city/:units', async (req, res) => {
         await WeatherModel.findOneAndDelete({city: queriedCity, unitsOfMeasurement: units});
 
         // First fetch for current day forcast
+        //! API_Key must either be the actual api key or encryped through another means for aws ec2 instances
         fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${queriedCity}&units=${units}&appid=${process.env.API_KEY}`)
         .then(res => res.json())
         .then(data => {
             const {list} = data;
             // console.log('Data:', data);
 
-            const initialSearchedDate = list[0]; 
+            if(list === undefined) throw new Error('List was undefined');
+            const initialSearchedDate = list[0];
 
             // organize data in accordance with our schema
             const cityWeatherData = new WeatherModel({
@@ -111,7 +113,10 @@ app.get('/weather/:city/:units', async (req, res) => {
     
             res.send(cityWeatherData);
         })
-        .catch(err => console.error(err))
+        .catch(err => {
+            console.error(err)
+            res.send([])
+        })
     }
 });
 
