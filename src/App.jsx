@@ -11,7 +11,7 @@ function App() {
   const [tempMin, setTempMin] = useState('');
   const [units, setUnits] = useState('imperial');
   const [searchedCity, setSearchedCity] = useState('');
-  const [windSpeed, setWindSpeed] = useState(0); //TODO: Organize wind details
+  const [windSpeed, setWindSpeed] = useState(0);
   const [windDegree, setWindDegree] = useState(0);
   const [gust, setGust] = useState(0);
   const [fiveDayForecast, setFiveDayForecast] = useState([]);
